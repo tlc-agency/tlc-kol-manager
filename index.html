@@ -154,14 +154,14 @@ textarea.fi2{resize:vertical;min-height:55px}
     <div class="stat"><div class="stat-v" id="s1" style="color:#111111">0</div><div class="stat-l">Tổng KOL</div></div>
     <div class="stat"><div class="stat-v" id="s2" style="color:#111111">0</div><div class="stat-l">Mega (1M+)</div></div>
     <div class="stat"><div class="stat-v" id="s3" style="color:#111111">0</div><div class="stat-l">Macro (500K-1M)</div></div>
-    <div class="stat"><div class="stat-v" id="s4" style="color:#111111">0</div><div class="stat-l">Mid (100K-500K)</div></div>
-    <div class="stat"><div class="stat-v" id="s5" style="color:#111111">0</div><div class="stat-l">Micro (10K-100K)</div></div>
+    <div class="stat"><div class="stat-v" id="s4" style="color:#111111">0</div><div class="stat-l">Micro (100K-500K)</div></div>
+    <div class="stat"><div class="stat-v" id="s5" style="color:#111111">0</div><div class="stat-l">Nano (10K-100K)</div></div>
   </div>
   <div class="filters">
-    <input type="text" class="inp" id="sq" placeholder="🔍 Tìm tên KOL..." oninput="render()">
+    <input type="text" class="inp" id="sq" placeholder="Tìm tên KOL..." oninput="render()">
     <div style="position:relative;display:inline-block">
       <button id="cat-btn" class="inp" onclick="toggleCatMenu()" style="cursor:pointer;min-width:160px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:8px">
-        <span id="cat-label">🏷️ Mọi category</span>
+        <span id="cat-label">Mọi category</span>
         <span style="font-size:10px">▼</span>
       </button>
       <div id="cat-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;background:#ffffff;border:1px solid #c0c0c0;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.15);z-index:999;min-width:180px;padding:6px 0;max-height:320px;overflow-y:auto">
@@ -184,16 +184,16 @@ textarea.fi2{resize:vertical;min-height:55px}
       </div>
     </div>
     <select class="inp" id="fs" onchange="render()">
-      <option value="">👥 Mọi size</option>
+      <option value="">Mọi size</option>
       <option value="1000000">Mega 1M+</option>
       <option value="500000">Macro 500K+</option>
-      <option value="100000">Mid 100K+</option>
-      <option value="10000">Micro 10K+</option>
+      <option value="100000">Micro 100K+</option>
+      <option value="10000">Nano 10K+</option>
     </select>
     <select class="inp" id="fh" onchange="render()">
-      <option value="">🤝 Tất cả</option>
-      <option value="yes">✅ Đã hợp tác</option>
-      <option value="no">⬜ Chưa</option>
+      <option value="">Tất cả</option>
+      <option value="yes">Đã hợp tác</option>
+      <option value="no">Chưa</option>
     </select>
     <button class="btn-g" onclick="clrF()" style="font-size:11px;padding:5px 9px">✕ Reset</button>
   </div>
@@ -342,8 +342,8 @@ function mxFlw(k) { return Math.max(parseInt(k.flwTT)||0, parseInt(k.flwFB)||0, 
 function tier(m) {
   if (m >= 1e6) return {l:"Mega", c:"#f59e0b"};
   if (m >= 5e5) return {l:"Macro", c:"#6366f1"};
-  if (m >= 1e5) return {l:"Mid", c:"#10b981"};
-  if (m >= 1e4) return {l:"Micro", c:"#3b82f6"};
+  if (m >= 1e5) return {l:"Micro", c:"#10b981"};
+  if (m >= 1e4) return {l:"Nano", c:"#3b82f6"};
   return {l:"Nano", c:"#94a3b8"};
 }
 
@@ -479,10 +479,16 @@ document.querySelectorAll("th.sort").forEach(function(th) {
 
 function clrF() {
   document.getElementById("sq").value="";
-  document.getElementById("fc").value="";
   document.getElementById("fs").value="";
   document.getElementById("fh").value="";
+  clearCats();
+  // Reset sort
+  sc = ""; sd = "asc";
+  document.querySelectorAll("th.sort span").forEach(function(s){ s.textContent = "↕"; });
   render();
+  // Scroll table back to top-left
+  var tw = document.querySelector(".tw");
+  if(tw){ tw.scrollTop = 0; tw.scrollLeft = 0; }
 }
 
 // Category toggles
@@ -714,11 +720,11 @@ function updateCatUI(){
   // Update button label
   var label = document.getElementById('cat-label');
   if(selCats.length === 0){
-    label.textContent = '🏷️ Mọi category';
+    label.textContent = 'Mọi category';
   } else if(selCats.length === 1){
-    label.textContent = '🏷️ ' + selCats[0];
+    label.textContent = selCats[0];
   } else {
-    label.textContent = '🏷️ ' + selCats.length + ' categories';
+    label.textContent = selCats.length + ' categories';
   }
   // Update active states on options
   document.querySelectorAll('.cat-opt').forEach(function(el){
