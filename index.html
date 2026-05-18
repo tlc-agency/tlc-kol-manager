@@ -335,7 +335,7 @@ var auth = firebase.auth();
 
 function signInGoogle() {
   var provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).catch(function(e){ alert('Lỗi đăng nhập: ' + e.message); });
+  auth.signInWithRedirect(provider);
 }
 function signOutUser() {
   if(confirm('Đăng xuất?')) auth.signOut();
