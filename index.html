@@ -137,6 +137,17 @@ textarea.fi2{resize:vertical;min-height:55px}
 </style>
 </head>
 <body>
+<div id="login-screen" style="display:flex;position:fixed;inset:0;background:#1a1a2e;z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:20px;">
+  <img src="logo_tiktok.png" style="width:60px;opacity:0.3;" onerror="this.style.display='none'">
+  <div style="color:#fff;font-size:24px;font-weight:700;">TLC KOL Manager</div>
+  <div style="color:#aaa;font-size:14px;">Đăng nhập để tiếp tục</div>
+  <button onclick="window._signIn()" style="padding:12px 28px;background:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;">
+    <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.34-8.16 2.34-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+    Đăng nhập bằng Google
+  </button>
+  <div style="color:#666;font-size:12px;">Chỉ dành cho nội bộ TLC</div>
+</div>
+
 
 <div class="hdr">
   <div class="htop">
@@ -314,71 +325,14 @@ var CATS = Object.keys(CC);
 var SK = "tlc_v7";
 var kols = [], sc = "id", sd = "asc", eid = null, nid = 500;
 
-const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRdqp-wJPE62vLCdFwOMuhEbHXxzD_p0cT_Tsp7dkCZITKQj3Q3jIERk-ot5cKih4wTIwBQ6Spbs_Bi/pub?gid=22728080&single=true&output=csv";
-
-function parseCSV(text) {
-  const lines = [];
-  let current = '', inQuotes = false;
-  const rows = [];
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (c === '"') { inQuotes = !inQuotes; }
-    else if (c === ',' && !inQuotes) { lines.push(current); current = ''; }
-    else if (c === '\n' && !inQuotes) { lines.push(current); rows.push(lines.splice(0)); current = ''; }
-    else { current += c; }
-  }
-  if (current) { lines.push(current); rows.push(lines.splice(0)); }
-  return rows;
-}
-
-function csvRowToKol(headers, row) {
-  const obj = {};
-  headers.forEach((h, i) => { obj[h] = (row[i] || '').replace(/^"|"$/g, '').trim(); });
-  const numFields = ['id','flwTT','flwFB','flwIG','pFBVideo','pTTVideo','pSDHA_month','pPhotoPost','pTTClient','pFBClient','pSDHAClient','pVideoCost','pAdLicense','pCheckin','pTVC'];
-  numFields.forEach(f => {
-    const v = obj[f];
-    if (v === '' || v === null || v === undefined) obj[f] = null;
-    else if (!isNaN(parseFloat(v))) obj[f] = parseFloat(v);
-  });
-  obj.categories = obj.categories ? obj.categories.split(',').map(s => s.trim()).filter(Boolean) : [];
-  obj.collaborated = obj.collaborated === 'true' || obj.collaborated === 'TRUE';
-  return obj;
-}
-
-function showLoading(show) {
-  const el = document.getElementById('sync-status');
-  if (el) el.textContent = show ? '⏳ Đang tải...' : '';
-}
-
 function init() {
-  showLoading(true);
-  fetch(SHEET_CSV_URL + '&t=' + Date.now())
-    .then(r => r.text())
-    .then(text => {
-      const rows = parseCSV(text);
-      if (rows.length < 2) throw new Error('No data');
-      const headers = rows[0];
-      kols = rows.slice(1).filter(r => r.some(c => c.trim())).map(r => csvRowToKol(headers, r));
-      nid = Math.max.apply(null, kols.map(k => parseInt(k.id)||0).concat([499])) + 1;
-      showLoading(false);
-      buildCats();
-      render();
-    })
-    .catch(e => {
-      console.warn('Sheets fetch failed, using local data:', e);
-      try {
-        var s = localStorage.getItem(SK);
-        if (s) { kols = JSON.parse(s); nid = Math.max.apply(null, kols.map(k=>k.id).concat([499])) + 1; }
-        else { kols = KDATA.slice(); nid = kols.length + 1; svKols(); }
-      } catch(e2) { kols = KDATA.slice(); nid = kols.length + 1; }
-      showLoading(false);
-      buildCats();
-      render();
-    });
+  // Firebase will handle loading data via onAuthStateChanged
+  // This is called as fallback only
 }
 
 function svKols() {
   try { localStorage.setItem(SK, JSON.stringify(kols)); } catch(e) {}
+  if (window._saveToFirestore) window._saveToFirestore(kols);
 }
 
 function mxFlw(k) { return Math.max(parseInt(k.flwTT)||0, parseInt(k.flwFB)||0, parseInt(k.flwIG)||0); }
@@ -782,6 +736,90 @@ function updateCatUI(){
 }
 
 init();
+</script>
+</div><!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCsoEhzROG8YLzpAEKcR7F57AdH7qirRe0",
+  authDomain: "tlc---kol.firebaseapp.com",
+  projectId: "tlc---kol",
+  storageBucket: "tlc---kol.firebasestorage.app",
+  messagingSenderId: "602074780941",
+  appId: "1:602074780941:web:6007ae32048f4665490c44"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+// Expose to global scope
+window._fb = { db, auth, provider, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, doc, setDoc, getDoc, onSnapshot, collection };
+
+// Auth state
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-root').style.display = 'flex';
+    document.getElementById('user-email').textContent = user.email;
+    // Load data from Firestore
+    window._loadFromFirestore();
+  } else {
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('app-root').style.display = 'none';
+  }
+});
+
+window._signIn = async function() {
+  try {
+    await signInWithPopup(auth, provider);
+  } catch(e) {
+    alert('Đăng nhập thất bại: ' + e.message);
+  }
+};
+
+window._signOut = async function() {
+  if(confirm('Bạn có muốn đăng xuất không?')) await signOut(auth);
+};
+
+window._saveToFirestore = async function(kolsData) {
+  try {
+    const { db, doc, setDoc } = window._fb;
+    await setDoc(doc(db, 'data', 'kols'), { kols: kolsData, updatedAt: Date.now() });
+    console.log('Saved to Firestore');
+  } catch(e) {
+    console.error('Save error:', e);
+  }
+};
+
+window._loadFromFirestore = async function() {
+  try {
+    const { db, doc, getDoc } = window._fb;
+    const snap = await getDoc(doc(db, 'data', 'kols'));
+    if (snap.exists()) {
+      const data = snap.data();
+      kols = data.kols;
+      nid = Math.max.apply(null, kols.map(k=>k.id).concat([499])) + 1;
+    } else {
+      // First time: upload KDATA to Firestore
+      kols = KDATA.slice();
+      nid = kols.length + 1;
+      await window._saveToFirestore(kols);
+    }
+    buildCats();
+    render();
+  } catch(e) {
+    console.error('Load error:', e);
+    kols = KDATA.slice();
+    nid = kols.length + 1;
+    buildCats();
+    render();
+  }
+};
 </script>
 </body>
 </html>
