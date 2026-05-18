@@ -314,23 +314,67 @@ var CATS = Object.keys(CC);
 var SK = "tlc_v7";
 var kols = [], sc = "id", sd = "asc", eid = null, nid = 500;
 
-function init() {
-  try {
-    var s = localStorage.getItem(SK);
-    if (s) {
-      kols = JSON.parse(s);
-      nid = Math.max.apply(null, kols.map(function(k){return k.id;}).concat([499])) + 1;
-    } else {
-      kols = KDATA.slice();
-      nid = kols.length + 1;
-      svKols();
-    }
-  } catch(e) {
-    kols = KDATA.slice();
-    nid = kols.length + 1;
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRdqp-wJPE62vLCdFwOMuhEbHXxzD_p0cT_Tsp7dkCZITKQj3Q3jIERk-ot5cKih4wTIwBQ6Spbs_Bi/pub?gid=22728080&single=true&output=csv";
+
+function parseCSV(text) {
+  const lines = [];
+  let current = '', inQuotes = false;
+  const rows = [];
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (c === '"') { inQuotes = !inQuotes; }
+    else if (c === ',' && !inQuotes) { lines.push(current); current = ''; }
+    else if (c === '\n' && !inQuotes) { lines.push(current); rows.push(lines.splice(0)); current = ''; }
+    else { current += c; }
   }
-  buildCats();
-  render();
+  if (current) { lines.push(current); rows.push(lines.splice(0)); }
+  return rows;
+}
+
+function csvRowToKol(headers, row) {
+  const obj = {};
+  headers.forEach((h, i) => { obj[h] = (row[i] || '').replace(/^"|"$/g, '').trim(); });
+  const numFields = ['id','flwTT','flwFB','flwIG','pFBVideo','pTTVideo','pSDHA_month','pPhotoPost','pTTClient','pFBClient','pSDHAClient','pVideoCost','pAdLicense','pCheckin','pTVC'];
+  numFields.forEach(f => {
+    const v = obj[f];
+    if (v === '' || v === null || v === undefined) obj[f] = null;
+    else if (!isNaN(parseFloat(v))) obj[f] = parseFloat(v);
+  });
+  obj.categories = obj.categories ? obj.categories.split(',').map(s => s.trim()).filter(Boolean) : [];
+  obj.collaborated = obj.collaborated === 'true' || obj.collaborated === 'TRUE';
+  return obj;
+}
+
+function showLoading(show) {
+  const el = document.getElementById('sync-status');
+  if (el) el.textContent = show ? '⏳ Đang tải...' : '';
+}
+
+function init() {
+  showLoading(true);
+  fetch(SHEET_CSV_URL + '&t=' + Date.now())
+    .then(r => r.text())
+    .then(text => {
+      const rows = parseCSV(text);
+      if (rows.length < 2) throw new Error('No data');
+      const headers = rows[0];
+      kols = rows.slice(1).filter(r => r.some(c => c.trim())).map(r => csvRowToKol(headers, r));
+      nid = Math.max.apply(null, kols.map(k => parseInt(k.id)||0).concat([499])) + 1;
+      showLoading(false);
+      buildCats();
+      render();
+    })
+    .catch(e => {
+      console.warn('Sheets fetch failed, using local data:', e);
+      try {
+        var s = localStorage.getItem(SK);
+        if (s) { kols = JSON.parse(s); nid = Math.max.apply(null, kols.map(k=>k.id).concat([499])) + 1; }
+        else { kols = KDATA.slice(); nid = kols.length + 1; svKols(); }
+      } catch(e2) { kols = KDATA.slice(); nid = kols.length + 1; }
+      showLoading(false);
+      buildCats();
+      render();
+    });
 }
 
 function svKols() {
