@@ -350,6 +350,14 @@ function loadFromFirestore(callback) {
     else { callback(null); }
   }).catch(function(e){ console.error('Load error:', e); callback(null); });
 }
+// Handle redirect result first
+auth.getRedirectResult().then(function(result) {
+  console.log('Redirect result:', result);
+}).catch(function(e) {
+  console.error('Redirect error:', e);
+  alert('Lỗi đăng nhập: ' + e.message);
+});
+
 auth.onAuthStateChanged(function(user) {
   var loginScreen = document.getElementById('login-screen');
   var appRoot = document.getElementById('app-root');
