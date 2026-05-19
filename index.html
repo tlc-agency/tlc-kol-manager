@@ -190,10 +190,10 @@ textarea.fi2{resize:vertical;min-height:55px}
     </div>
     <select class="inp" id="fs" onchange="render()">
       <option value="">Mọi size</option>
-      <option value="1000000">Mega 1M+</option>
-      <option value="500000">Macro 500K+</option>
-      <option value="100000">Micro 100K+</option>
-      <option value="10000">Nano 10K+</option>
+      <option value="Mega">Mega (1M+)</option>
+      <option value="Macro">Macro (500K-1M)</option>
+      <option value="Micro">Micro (100K-500K)</option>
+      <option value="Nano">Nano (10K-100K)</option>
     </select>
     <select class="inp" id="fh" onchange="render()">
       <option value="">Tất cả</option>
@@ -397,16 +397,32 @@ function ptd(v, isClient) {
 
 function getRows() {
   var q = (document.getElementById("sq").value||"").toLowerCase();
-    var sz = parseInt(document.getElementById("fs").value)||0;
+    var tierFilter = document.getElementById("fs").value;
   var cl = document.getElementById("fh").value;
+
+  function getTierName(k) {
+    var m = mxFlw(k);
+    if (m >= 1e6) return "Mega";
+    if (m >= 5e5) return "Macro";
+    if (m >= 1e5) return "Micro";
+    if (m >= 1e4) return "Nano";
+    return "Other";
+  }
+
   return kols.filter(function(k) {
     if (q && k.name.toLowerCase().indexOf(q) < 0) return false;
     if (selCats.length > 0 && !selCats.some(function(c){ return (k.categories||[]).indexOf(c) >= 0; })) return false;
-    if (sz && mxFlw(k) < sz) return false;
     if (cl === "yes" && !k.collaborated) return false;
     if (cl === "no" && k.collaborated) return false;
     return true;
   }).sort(function(a,b) {
+    // Tier priority sort: selected tier goes to top
+    if (tierFilter) {
+      var aTier = getTierName(a), bTier = getTierName(b);
+      var aMatch = aTier === tierFilter ? 0 : 1;
+      var bMatch = bTier === tierFilter ? 0 : 1;
+      if (aMatch !== bMatch) return aMatch - bMatch;
+    }
     var va, vb;
     if (sc==="name") { va=a.name; vb=b.name; }
     else if (sc==="tt") { va=parseInt(a.flwTT)||0; vb=parseInt(b.flwTT)||0; }
