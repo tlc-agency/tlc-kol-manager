@@ -481,7 +481,7 @@ function render() {
     h += "<td style=\"font-weight:800;color:"+(k.flwIG?"#111111":"#aaaaaa")+";text-align:center\">"+fmtN(k.flwIG)+"</td>";
     h += "<td>"+(m>0?"<span class=\"tier\" style=\"background:"+t.c+"22;color:"+t.c+";border:1px solid "+t.c+"44\">"+t.l+"</span>":"")+"</td>";
     h += ptd(k.pFBVideo,false) + ptd(k.pTTVideo,false) + ptd(k.pIGVideo,false) + ptd(k.pSDHA_month,false);
-    h += "<td style=\"font-size:10px;color:#111111;font-weight:800;max-width:200px;white-space:normal;word-break:break-word\">"+(k.pShooting?esc(k.pShooting):"—")+"</td>";
+    h += "<td style=\"font-size:10px;color:#111111;font-weight:800;max-width:200px;white-space:normal;word-break:break-word\">"+(k.pShooting?esc((function(v){v=String(v).trim();if(/^\d+\.0$/.test(v)){return parseInt(v).toLocaleString("vi-VN");}return v;})(k.pShooting)):"—")+"</td>";
     h += ptd(k.pPhotoPost,false);
     h += "<td style=\"font-size:10px;color:#333333;font-weight:600;max-width:150px;white-space:normal;word-break:break-word\">"+(k.pSDHA?esc(k.pSDHA.substring(0,100)):"—")+"</td>";
     h += ptd(k.pTVC,false) + ptd(k.pCheckin,false);
