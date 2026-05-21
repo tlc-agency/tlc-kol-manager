@@ -659,7 +659,7 @@ function saveKol() {
     id: eid!==null ? eid : nid++,
     name: name, tiktok: gv("f-tt"), facebook: gv("f-fb"), instagram: gv("f-ig"),
     categories: getSelCats(),
-    flwTT: parseInt(gv("f-ftt"))||0, flwFB: parseInt(gv("f-ffb"))||0, flwIG: parseInt(gv("f-fig"))||0,
+    flwTT: parseInt((gv("f-ftt")||"0").replace(/\./g,""))||0, flwFB: parseInt((gv("f-ffb")||"0").replace(/\./g,""))||0, flwIG: parseInt((gv("f-fig")||"0").replace(/\./g,""))||0,
     pFBVideo: gn("f-fbvid"), pTTVideo: gn("f-ttvid"), pIGVideo: gn("f-igvid"),
     pSDHA_month: gn("f-sdhm"), pPhotoPost: gn("f-pp"), pTVC: gn("f-tvc"), pCheckin: gn("f-ci"),
     pShooting: gv("f-sh"), pSDHA: gv("f-sdha"),
@@ -805,19 +805,17 @@ function showStatus(msg, color) {
 
 
 
-// ===== PRICE INPUT AUTO-FORMAT =====
+// ===== PRICE INPUT AUTO-FORMAT (on blur) =====
 function formatPriceInput(el) {
-  el.addEventListener('input', function() {
-    var pos = this.selectionStart;
-    var raw = this.value.replace(/\./g, '');
+  el.addEventListener('blur', function() {
+    var raw = this.value.replace(/\./g, '').replace(/,/g, '').trim();
     if (raw === '' || raw === '-') return;
     var num = parseInt(raw);
-    if (isNaN(num)) { this.value = raw.replace(/[^0-9]/g,''); return; }
-    var formatted = num.toLocaleString('vi-VN');
-    this.value = formatted;
+    if (isNaN(num)) return;
+    this.value = num.toLocaleString('vi-VN');
   });
 }
-var priceInputIds = ['f-fbvid','f-ttvid','f-igvid','f-sdhm','f-pp','f-tvc','f-ci'];
+var priceInputIds = ['f-ftt','f-ffb','f-fig','f-fbvid','f-ttvid','f-igvid','f-sdhm','f-pp','f-tvc','f-ci'];
 priceInputIds.forEach(function(id){
   var el = document.getElementById(id);
   if(el) formatPriceInput(el);
