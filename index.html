@@ -6,6 +6,40 @@
 <title>TLC KOL/KOC Manager</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+
+/* ===== LOADING SCREEN ===== */
+#loading-screen{
+  position:fixed;inset:0;background:#f5f5f5;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:99999;transition:opacity .6s ease;
+}
+#loading-screen.fade-out{opacity:0;pointer-events:none}
+#loading-logo{width:160px;height:auto;margin-bottom:28px}
+#loading-text{font-family:Montserrat,sans-serif;font-size:13px;font-weight:600;color:#aaa;letter-spacing:2px;margin-top:8px}
+#tlc-letters{display:flex;gap:4px;margin-top:4px}
+#tlc-letters span{
+  font-family:Montserrat,sans-serif;
+  font-size:52px;font-weight:900;
+  background:linear-gradient(135deg,#ee3a55,#f59e0b);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  opacity:0;transform:translateY(20px);
+  animation:letterForm 0.6s ease forwards;
+}
+#tlc-letters span:nth-child(1){animation-delay:0.5s}
+#tlc-letters span:nth-child(2){animation-delay:1.5s}
+#tlc-letters span:nth-child(3){animation-delay:2.5s}
+@keyframes letterForm{
+  0%{opacity:0;transform:translateY(20px) scale(0.8)}
+  60%{opacity:1;transform:translateY(-4px) scale(1.05)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+#tlc-letters.formed span{
+  animation:letterPulse 1s ease-in-out infinite;
+}
+@keyframes letterPulse{
+  0%,100%{filter:brightness(1)}
+  50%{filter:brightness(1.3)}
+}
 /* ===== RESET ===== */
 *{box-sizing:border-box;margin:0;padding:0}
 
@@ -152,13 +186,16 @@ textarea.fi2{resize:vertical;min-height:55px}
 </head>
 <body>
 
-  
-
+<div id="loading-screen">
+  <img id="loading-logo" src="tlc_logo.png" alt="TLC">
+  <div id="tlc-letters"><span>T</span><span>L</span><span>C</span></div>
+  <div id="loading-text">Đang tải dữ liệu...</div>
+</div>
 
 <div class="hdr">
   <div class="htop">
     <div class="logo">
-      <div class="logo-ic" style="background:none;padding:0"><img src="data:image/png;base64,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" width="32" height="32" style="display:block;border-radius:8px"></div>
+      <div class="logo-ic" style="background:none;padding:0"><img src="tlc_logo.png" width="32" height="32" style="display:block;border-radius:8px"></div>
       <div><div class="logo-t">TLC KOL/KOC Manager</div><div class="logo-s">Rate Card • <span id="tc">0</span> KOLs</div></div>
     </div>
     <div style="display:flex;gap:6px">
@@ -332,15 +369,15 @@ function init() {
       nid = Math.max.apply(null, kols.map(function(k){return k.id;}).concat([499])) + 1;
       try { localStorage.setItem(SK, JSON.stringify(kols)); } catch(e) {}
       buildCats(); render();
-      showStatus('✅ Đã đồng bộ', '#10b981');
+      showStatus('✅ Đã đồng bộ', '#10b981'); if(window._loadingFirestoreDone) window._loadingFirestoreDone();
     } else {
       kols = KDATA.slice(); nid = kols.length + 1;
       buildCats(); render(); svKols();
-      showStatus('✅ Đã khởi tạo', '#10b981');
+      showStatus('✅ Đã khởi tạo', '#10b981'); if(window._loadingFirestoreDone) window._loadingFirestoreDone();
     }
     setTimeout(function(){ showStatus(''); }, 3000);
   }).catch(function(e) {
-    showStatus('⚠️ Offline', '#ef4444');
+    showStatus('⚠️ Offline', '#ef4444'); if(window._loadingFirestoreDone) window._loadingFirestoreDone();
     if (!kols.length) { kols = KDATA.slice(); nid = kols.length + 1; buildCats(); render(); }
   });
 }
@@ -821,7 +858,39 @@ priceInputIds.forEach(function(id){
   if(el) formatPriceInput(el);
 });
 
-init();
+// ===== LOADING SCREEN LOGIC =====
+(function(){
+  var minWait = 5000; // minimum 5 seconds
+  var started = Date.now();
+  var firestoreDone = false;
+  var timerDone = false;
+  
+
+  var barTimer = null;
+
+  function tryHide() {
+    if (!firestoreDone || !timerDone) return;
+    if(barTimer) clearInterval(barTimer);
+    setTimeout(function(){
+      var el = document.getElementById('loading-screen');
+      if(el){ el.classList.add('fade-out'); setTimeout(function(){ el.style.display='none'; }, 500); }
+    }, 300);
+  }
+
+  // Override init to hook into Firestore done
+  var _origInit = init;
+  window._loadingFirestoreDone = function(){ firestoreDone = true; tryHide(); };
+
+  // Add pulse after all letters formed
+  setTimeout(function(){
+    var el = document.getElementById('tlc-letters');
+    if(el) el.classList.add('formed');
+  }, 3500);
+  // Minimum 5s timer
+  setTimeout(function(){ timerDone = true; tryHide(); }, minWait);
+
+  init();
+})();
 </script>
 </body>
 </html>
