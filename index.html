@@ -172,11 +172,6 @@ textarea.fi2{resize:vertical;min-height:55px}
 /* ===== LEGEND ===== */
 .legend{flex-shrink:0;padding:4px 20px;background:#e8e8e8;border-top:1px solid #c0c0c0;display:flex;gap:14px;font-size:9px;font-weight:600;color:#555}
 
-/* ===== SEARCH SUGGEST ===== */
-.sq-item{padding:8px 14px;cursor:pointer;font-size:12px;font-weight:600;color:#333;transition:background .1s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sq-item:hover,.sq-item.active{background:#6366f115;color:#6366f1}
-.sq-item span.hl{color:#ee3a55;font-weight:800}
-
 /* ===== CATEGORY DROPDOWN ===== */
 .cat-opt{padding:7px 14px;cursor:pointer;font-size:12px;font-weight:600;color:#333;transition:background .1s}
 .cat-opt:hover{background:#f0f0f0}
@@ -217,10 +212,7 @@ textarea.fi2{resize:vertical;min-height:55px}
     <div class="stat"><div class="stat-v" id="s5" style="color:#111111">0</div><div class="stat-l">Nano (10K-100K)</div></div>
   </div>
   <div class="filters">
-    <div style="position:relative;display:inline-block">
-      <input type="text" class="inp" id="sq" placeholder="Tìm tên KOL..." oninput="onSearchInput()" autocomplete="off">
-      <div id="sq-suggest" style="display:none;position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid #c0c0c0;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:999;min-width:220px;overflow:hidden"></div>
-    </div>
+    <input type="text" class="inp" id="sq" placeholder="Tìm tên KOL..." oninput="render()">
     <div style="position:relative;display:inline-block">
       <button id="cat-btn" class="inp" onclick="toggleCatMenu()" style="cursor:pointer;min-width:160px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:8px">
         <span id="cat-label">Mọi category</span>
@@ -897,46 +889,7 @@ priceInputIds.forEach(function(id){
   // Minimum 5s timer
   setTimeout(function(){ timerDone = true; tryHide(); }, minWait);
 
-  
-// ===== SEARCH SUGGEST =====
-function onSearchInput() {
-  render();
-  showSuggest();
-}
-
-function showSuggest() {
-  var q = (document.getElementById('sq').value || '').toLowerCase().trim();
-  var box = document.getElementById('sq-suggest');
-  if (!q) { box.style.display = 'none'; return; }
-  var matches = kols.filter(function(k) {
-    return k.name.toLowerCase().indexOf(q) >= 0;
-  }).slice(0, 6);
-  if (!matches.length) { box.style.display = 'none'; return; }
-  var h = '';
-  matches.forEach(function(k) {
-    var name = k.name;
-    var idx = name.toLowerCase().indexOf(q);
-    var hl = name.substring(0,idx) + '<span class="hl">' + name.substring(idx,idx+q.length) + '</span>' + name.substring(idx+q.length);
-    h += '<div class="sq-item" onmousedown="selectSuggest(''+name.replace(/\/g,'\\').replace(/'/g,"\'")+'')">' + hl + '</div>';
-  });
-  box.innerHTML = h;
-  box.style.display = 'block';
-}
-
-function selectSuggest(name) {
-  document.getElementById('sq').value = name;
-  document.getElementById('sq-suggest').style.display = 'none';
-  render();
-}
-
-document.addEventListener('click', function(e) {
-  var sq = document.getElementById('sq');
-  var box = document.getElementById('sq-suggest');
-  if (!sq || !box) return;
-  if (!sq.contains(e.target) && !box.contains(e.target)) box.style.display = 'none';
-});
-
-init();
+  init();
 })();
 </script>
 </body>
