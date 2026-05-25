@@ -212,7 +212,7 @@ textarea.fi2{resize:vertical;min-height:55px}
     <div class="stat"><div class="stat-v" id="s5" style="color:#111111">0</div><div class="stat-l">Nano (10K-100K)</div></div>
   </div>
   <div class="filters">
-    <input type="text" class="inp" id="sq" placeholder="Tìm tên KOL..." oninput="render()">
+    <input type="text" class="inp" id="sq" placeholder="Tìm tên KOL..." oninput="render()" autocomplete="off">
     <div style="position:relative;display:inline-block">
       <button id="cat-btn" class="inp" onclick="toggleCatMenu()" style="cursor:pointer;min-width:160px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:8px">
         <span id="cat-label">Mọi category</span>
@@ -322,10 +322,10 @@ textarea.fi2{resize:vertical;min-height:55px}
         <div class="fi full"><label class="fl">Category</label><div class="ctg" id="f-cats"></div></div>
         <div class="sec-lbl" style="color:#10b981">■ Giá Agency</div>
         <div class="fi"><label class="fl">Facebook Video</label><input type="text" class="fi2" id="f-fbvid" inputmode="numeric" placeholder="0"></div>
-        <div class="fi"><label class="fl">TikTok Video</label><input type="text" class="fi2" id="f-ttvid" inputmode="numeric" placeholder="0"></div>
-        <div class="fi"><label class="fl">Instagram Video</label><input type="text" class="fi2" id="f-igvid" inputmode="numeric" placeholder="0"></div>
-        <div class="fi"><label class="fl">SD Hình ảnh/tháng</label><input type="text" class="fi2" id="f-sdhm" inputmode="numeric" placeholder="0"></div>
         <div class="fi"><label class="fl">Photo Post</label><input type="text" class="fi2" id="f-pp" inputmode="numeric" placeholder="0"></div>
+        <div class="fi"><label class="fl">TikTok Video</label><input type="text" class="fi2" id="f-ttvid" inputmode="numeric" placeholder="0"></div>
+        <div class="fi"><label class="fl">SD Hình ảnh/tháng</label><input type="text" class="fi2" id="f-sdhm" inputmode="numeric" placeholder="0"></div>
+        <div class="fi"><label class="fl">Instagram Video</label><input type="text" class="fi2" id="f-igvid" inputmode="numeric" placeholder="0"></div>
         <div class="fi"><label class="fl">TVC</label><input type="text" class="fi2" id="f-tvc" inputmode="numeric" placeholder="0"></div>
         <div class="fi"><label class="fl">Check-in Booth</label><input type="text" class="fi2" id="f-ci" inputmode="numeric" placeholder="0"></div>
         <div class="fi full"><label class="fl">Shooting (mô tả)</label><textarea class="fi2" id="f-sh" rows="2" placeholder="VD: 4h: 25tr, 8h: 45tr..."></textarea></div>
@@ -369,15 +369,15 @@ function init() {
       nid = Math.max.apply(null, kols.map(function(k){return k.id;}).concat([499])) + 1;
       try { localStorage.setItem(SK, JSON.stringify(kols)); } catch(e) {}
       buildCats(); render();
-      showStatus('✅ Đã đồng bộ', '#10b981'); if(window._loadingFirestoreDone) window._loadingFirestoreDone();
+      showStatus('✅ Đã đồng bộ', '#10b981'); if(window._firestoreSyncDone) window._firestoreSyncDone();
     } else {
       kols = KDATA.slice(); nid = kols.length + 1;
       buildCats(); render(); svKols();
-      showStatus('✅ Đã khởi tạo', '#10b981'); if(window._loadingFirestoreDone) window._loadingFirestoreDone();
+      showStatus('✅ Đã khởi tạo', '#10b981'); if(window._firestoreSyncDone) window._firestoreSyncDone();
     }
     setTimeout(function(){ showStatus(''); }, 3000);
   }).catch(function(e) {
-    showStatus('⚠️ Offline', '#ef4444'); if(window._loadingFirestoreDone) window._loadingFirestoreDone();
+    showStatus('⚠️ Offline', '#ef4444'); if(window._firestoreSyncDone) window._firestoreSyncDone();
     if (!kols.length) { kols = KDATA.slice(); nid = kols.length + 1; buildCats(); render(); }
   });
 }
@@ -860,33 +860,27 @@ priceInputIds.forEach(function(id){
 
 // ===== LOADING SCREEN LOGIC =====
 (function(){
-  var minWait = 5000; // minimum 5 seconds
-  var started = Date.now();
+  var minWait = 5000;
   var firestoreDone = false;
   var timerDone = false;
-  
-
-  var barTimer = null;
 
   function tryHide() {
     if (!firestoreDone || !timerDone) return;
-    if(barTimer) clearInterval(barTimer);
-    setTimeout(function(){
-      var el = document.getElementById('loading-screen');
-      if(el){ el.classList.add('fade-out'); setTimeout(function(){ el.style.display='none'; }, 500); }
-    }, 300);
+    var el = document.getElementById('loading-screen');
+    if(el){ el.classList.add('fade-out'); setTimeout(function(){ el.style.display='none'; }, 500); }
   }
 
-  // Override init to hook into Firestore done
-  var _origInit = init;
-  window._loadingFirestoreDone = function(){ firestoreDone = true; tryHide(); };
+  // Set global callback BEFORE init() runs
+  window._firestoreSyncDone = function() {
+    firestoreDone = true;
+    tryHide();
+  };
 
-  // Add pulse after all letters formed
   setTimeout(function(){
     var el = document.getElementById('tlc-letters');
     if(el) el.classList.add('formed');
   }, 3500);
-  // Minimum 5s timer
+
   setTimeout(function(){ timerDone = true; tryHide(); }, minWait);
 
   init();
