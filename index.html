@@ -169,6 +169,14 @@ textarea.fi2{resize:vertical;min-height:55px}
 /* ===== COLLAB BADGE ===== */
 .collab-b{display:inline-flex;padding:1px 6px;border-radius:20px;font-size:9px;font-weight:700;background:#10b98122;color:#10b981;border:1px solid #10b98144;margin-top:2px}
 
+/* ===== NOTE TOGGLE ===== */
+.note-collapsed{max-height:48px;overflow:hidden;position:relative}
+.note-collapsed::after{content:'';position:absolute;bottom:0;left:0;right:0;height:20px;background:linear-gradient(transparent,#e8e8e8)}
+tbody tr:nth-child(even) .note-collapsed::after{background:linear-gradient(transparent,#f0f0f0)}
+tbody tr:hover .note-collapsed::after{background:linear-gradient(transparent,#dceaf8)}
+.note-toggle{display:block;margin-top:3px;font-size:9px;font-weight:700;color:#6366f1;cursor:pointer;background:none;border:none;padding:0;font-family:Montserrat,sans-serif;text-align:left}
+.note-toggle:hover{text-decoration:underline}
+
 /* ===== LEGEND ===== */
 .legend{flex-shrink:0;padding:4px 20px;background:#e8e8e8;border-top:1px solid #c0c0c0;display:flex;gap:14px;font-size:9px;font-weight:600;color:#555}
 
@@ -527,7 +535,18 @@ function render() {
     h += "<td style=\"font-size:10px;color:#333333;font-weight:600;max-width:150px;white-space:normal;word-break:break-word\">"+(k.pSDHA?esc(k.pSDHA.substring(0,100)):"—")+"</td>";
     h += ptd(k.pTVC,false) + ptd(k.pCheckin,false);
     h += "<td style=\"font-size:10px;color:#111111;font-weight:700;min-width:160px;max-width:260px;white-space:normal;word-break:break-word;line-height:1.5\">"+esc(k.contact||"—")+"</td>";
-    h += "<td class=\"note-td\" style=\"text-align:left\">"+esc(k.note||"")+"</td>";
+    (function(){
+      var noteText = k.note||"";
+      var noteId = "note-"+k.id;
+      var hasMore = noteText.length > 80;
+      var noteHtml = "<td class=\"note-td\" style=\"text-align:left;padding:6px 10px\">";
+      noteHtml += "<div id=\""+noteId+"\" class=\"note-collapsed\">"+esc(noteText)+"</div>";
+      if(hasMore){
+        noteHtml += "<button class=\"note-toggle\" onclick=\"toggleNote('"+noteId+"',this);event.stopPropagation()\">▼ Xem thêm</button>";
+      }
+      noteHtml += "</td>";
+      h += noteHtml;
+    })();
     h += "</tr>";
   }
   if (!h) h = "<tr><td colspan=\"22\" style=\"padding:40px;text-align:center;color:#475569\">Không tìm thấy KOL nào</td></tr>";
@@ -888,7 +907,21 @@ priceInputIds.forEach(function(id){
 
   setTimeout(function(){ timerDone = true; tryHide(); }, minWait);
 
-  init();
+  
+// ===== NOTE TOGGLE =====
+function toggleNote(id, btn) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  if (el.classList.contains('note-collapsed')) {
+    el.classList.remove('note-collapsed');
+    btn.textContent = '▲ Thu gọn';
+  } else {
+    el.classList.add('note-collapsed');
+    btn.textContent = '▼ Xem thêm';
+  }
+}
+
+init();
 })();
 </script>
 </body>
