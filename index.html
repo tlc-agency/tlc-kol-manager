@@ -538,12 +538,9 @@ function render() {
     (function(){
       var noteText = k.note||"";
       var noteId = "note-"+k.id;
-      var hasMore = noteText.length > 80;
       var noteHtml = "<td class=\"note-td\" style=\"text-align:left;padding:6px 10px\">";
       noteHtml += "<div id=\""+noteId+"\" class=\"note-collapsed\">"+esc(noteText)+"</div>";
-      if(hasMore){
-        noteHtml += "<button class=\"note-toggle\" onclick=\"toggleNote('"+noteId+"',this);event.stopPropagation()\">▼ Xem thêm</button>";
-      }
+      noteHtml += "<button class=\"note-toggle\" onclick=\"toggleNote('"+noteId+"',this);event.stopPropagation()\">▼ Expand</button>";
       noteHtml += "</td>";
       h += noteHtml;
     })();
@@ -914,10 +911,10 @@ function toggleNote(id, btn) {
   if (!el) return;
   if (el.classList.contains('note-collapsed')) {
     el.classList.remove('note-collapsed');
-    btn.textContent = '▲ Thu gọn';
+    btn.textContent = '▲ Collapse';
   } else {
     el.classList.add('note-collapsed');
-    btn.textContent = '▼ Xem thêm';
+    btn.textContent = '▼ Expand';
   }
 }
 
