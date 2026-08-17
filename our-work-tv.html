@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="vi" data-lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Infinity, TV Advertising</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{--green:#a9df70;--green-dk:#7dbf44;--ink:#1e1e1e;--muted:#717171;--border:#e5e5e5;--charcoal:#3a3a3a;--canvas2:#f0f0ee;--canvas3:#f5f5f3;font-size:14px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+[data-lang="vi"] .en{display:none!important}
+[data-lang="en"] .vi{display:none!important}
+body{font-family:'Montserrat',sans-serif;background:#f5f5f3;color:var(--ink);overflow-x:hidden;}
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:800;display:flex;align-items:center;justify-content:space-between;padding:0 4vw;height:56px;background:rgba(255,255,255,.93);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:padding .3s;}
+nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,.06)}
+.lg-text{font-family:'Montserrat',sans-serif;font-weight:600;font-size:1.3rem;letter-spacing:-.02em;color:var(--charcoal);line-height:1;}
+.nav-logo{display:flex;align-items:center;gap:1px;text-decoration:none}
+.nav-logo svg{height:26px;width:auto}
+.nav-center{display:flex;gap:1.2rem;list-style:none;align-items:center}
+.nav-center a{color:var(--muted);text-decoration:none;font-size:.72rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;transition:color .2s;padding-bottom:2px;border-bottom:1.5px solid transparent}
+.nav-center a:hover,.nav-center a.active{color:var(--ink);border-bottom-color:var(--green)}
+.nav-dropdown{position:static;}
+.nav-dropdown>a{display:inline-flex;align-items:center;gap:.25rem;cursor:pointer;line-height:1;}
+.nav-dropdown>a::after{content:'▾';font-size:.6rem;opacity:.6;transition:transform .2s;}
+.nav-dropdown:hover>a::after{transform:rotate(180deg);}
+.nav-dropdown-menu{position:absolute;top:100%;left:0;right:0;width:100%;background:white;box-shadow:0 8px 32px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06);padding:1.8rem 4vw 1.6rem;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s,transform .2s;transform:translateY(-6px);z-index:200;}
+.nav-dropdown:hover .nav-dropdown-menu{opacity:1;visibility:visible;transform:translateY(0);}
+.mega-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0 2px;}
+.mega-col{padding:0 1rem;}
+.mega-col+.mega-col{border-left:1px solid var(--border);}
+.mega-col-title,.nav-dropdown-menu .mega-col-title{display:block;font-weight:800;font-size:.68rem;color:var(--ink) !important;letter-spacing:.04em;margin-bottom:.6rem;padding-bottom:.45rem;border-bottom:2px solid var(--green);text-decoration:none;text-transform:uppercase;line-height:1.25;}
+.mega-col-title:hover,.nav-dropdown-menu .mega-col-title:hover{color:var(--green-dk) !important;}
+.mega-sub{display:flex;flex-direction:column;gap:.1rem;}
+.mega-sub a{display:block;padding:.28rem .4rem;border-radius:6px;color:var(--muted);font-size:.65rem;font-weight:400;letter-spacing:.01em;text-decoration:none;white-space:nowrap;border-bottom:none;cursor:default;}
+.mega-sub a:hover{background:none;color:var(--muted);border-bottom:none;}
+.nav-dropdown-divider{display:none;}
+.nav-right{display:flex;align-items:center;gap:1rem}
+.nav-cta{padding:.55rem 1.4rem;background:var(--green);color:var(--ink);border-radius:100px;font-size:.8rem;font-weight:700;text-decoration:none;letter-spacing:.03em;transition:background .2s,transform .15s;white-space:nowrap;}
+.nav-cta:hover{background:var(--green-dk);transform:translateY(-1px)}
+#back-to-top{position:fixed;bottom:2rem;right:2rem;width:46px;height:46px;border-radius:50%;background:var(--green-dk);color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.22);opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .25s ease,transform .25s ease,visibility .25s,background .2s;z-index:999;}
+#back-to-top.show{opacity:1;visibility:visible;transform:translateY(0);}
+#back-to-top:hover{background:var(--green);}
+#back-to-top svg{width:20px;height:20px;}
+@media(max-width:768px){#back-to-top{bottom:1.2rem;right:1.2rem;width:42px;height:42px;}}
+.lang-toggle{display:flex;align-items:center;background:#f4f4f2;border:1px solid var(--border);border-radius:100px;padding:3px;gap:2px;}
+.lang-btn{padding:.3rem .75rem;border-radius:100px;font-size:.72rem;font-weight:600;letter-spacing:.06em;border:none;background:transparent;color:var(--muted);cursor:pointer;transition:all .2s;}
+.lang-btn.active{background:var(--charcoal);color:white}
+@media(max-width:600px){.nav-center{display:none}}
+
+/* ── PAGE HEADER ── */
+.ow-hero{padding:7rem 5vw 2.5rem;}
+.ow-breadcrumb{display:inline-flex;align-items:center;gap:.4rem;color:var(--muted);text-decoration:none;font-size:.78rem;font-weight:600;margin-bottom:1.2rem;}
+.ow-breadcrumb:hover{color:var(--green-dk);}
+.ow-hero h1{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(2rem,4.5vw,3.2rem);letter-spacing:-.03em;line-height:1.1;}
+.ow-hero h1 span{color:var(--ink);}
+.ow-hero p{margin-top:.8rem;color:var(--muted);font-size:.95rem;max-width:600px;line-height:1.7;}
+
+/* ── CONTENT WRAP ── */
+.ow-wrap{padding:0 5vw 5rem;}
+
+/* ── SECTION TITLE ── */
+.tv-section-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(1.4rem,2.5vw,1.9rem);letter-spacing:-.025em;color:var(--ink);margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:2px solid var(--green-dk);}
+.tv-section-title em{font-style:normal;color:var(--green-dk);}
+.tv-section{margin-bottom:3.5rem;}
+
+/* ── CHANNEL CARDS GRID ── */
+.tv-channels-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.tv-channel-card{background:#fff;border:1px solid var(--border);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.tv-channel-logo{height:160px;display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+.tv-channel-logo img{width:100%;height:100%;object-fit:contain;}
+.tv-channel-logo.dark{background:var(--ink);}
+.tv-channel-logo.navy{background:#0a1f3c;}
+.tv-channel-logo.blue{background:#0057b8;}
+.tv-channel-logo.teal{background:#b8f0e8;}
+.tv-channel-logo.red{background:#cc0000;}
+.tv-channel-logo.light{background:#e8e8e8;}
+.tv-channel-header{background:linear-gradient(135deg,#2d6e1f 0%,#4a9e2e 60%,#3a8020 100%);padding:.7rem 1rem;}
+.tv-channel-header h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:.9rem;color:#fff;letter-spacing:.01em;}
+.tv-channel-header .sub{font-size:.7rem;color:rgba(255,255,255,.65);margin-top:.15rem;font-weight:500;}
+.tv-channel-body{padding:1rem;}
+.tv-channel-row{display:flex;flex-direction:column;gap:.15rem;padding:.55rem 0;border-bottom:1px solid var(--border);}
+.tv-channel-row:last-child{border-bottom:none;padding-bottom:0;}
+.tv-channel-row-label{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green-dk);}
+.tv-channel-row-val{font-size:.76rem;color:var(--ink);line-height:1.55;}
+
+/* ── 2-COL SLOTS ── */
+.tv-slots-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+.tv-slot-card{background:#fff;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.tv-slot-header{padding:.8rem 1rem;display:flex;align-items:center;justify-content:space-between;}
+.tv-slot-header h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:1rem;color:#fff;}
+.tv-slot-header .badge{font-size:.65rem;font-weight:700;padding:.25rem .7rem;border-radius:100px;border:1.5px solid rgba(255,255,255,.5);color:#fff;white-space:nowrap;}
+.tv-slot-header.red-bg{background:#c0392b;}
+.tv-slot-header.navy-bg{background:#1a3a6e;}
+.tv-slot-sub{font-size:.68rem;color:rgba(255,255,255,.65);margin-top:.15rem;letter-spacing:.04em;}
+.tv-slot-logo{height:130px;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.tv-slot-logo img{width:100%;height:100%;object-fit:contain;}
+.tv-slot-logo.dark{background:var(--ink);}
+.tv-slot-logo.navy{background:#0a1f3c;}
+.tv-slot-body{padding:1rem;}
+.tv-slot-row{display:flex;flex-direction:column;gap:.15rem;padding:.5rem 0;border-bottom:1px solid var(--border);}
+.tv-slot-row:last-child{border-bottom:none;padding-bottom:0;}
+.tv-slot-row-label{display:flex;align-items:center;gap:.4rem;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green-dk);margin-bottom:.1rem;}
+.tv-slot-row-val{font-size:.76rem;color:var(--ink);line-height:1.55;}
+.tv-source{margin-top:1rem;font-size:.65rem;color:rgba(0,0,0,.3);font-style:italic;}
+
+/* ── DIGITAL ECOSYSTEM ── */
+.tv-eco-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.tv-eco-card{background:#fff;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.06);overflow:hidden;}
+.tv-eco-header{padding:.75rem 1rem;display:flex;align-items:center;gap:.6rem;}
+.tv-eco-header h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:.88rem;color:#fff;letter-spacing:.01em;}
+.tv-eco-header.green-bg{background:var(--charcoal);}
+.tv-eco-header.blue-bg{background:#1a6abf;}
+.tv-eco-header.purple-bg{background:#6d3fc2;}
+.tv-eco-stat{margin:.8rem 1rem;background:#f5f5f3;padding:.6rem .9rem;text-align:center;}
+.tv-eco-stat strong{font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.1rem;color:var(--green-dk);display:block;}
+.tv-eco-stat span{font-size:.7rem;color:var(--muted);}
+.tv-eco-body{padding:.5rem 1rem 1rem;}
+.tv-eco-body p{font-size:.76rem;color:var(--muted);line-height:1.65;}
+
+/* ── SPORTS CLUSTER TABLE ── */
+.tv-sports-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.tv-sports-card{background:#fff;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.06);overflow:hidden;}
+.tv-sports-header{padding:.75rem 1rem;}
+.tv-sports-header.fb{background:#1877f2;}
+.tv-sports-header.yt{background:#ff0000;}
+.tv-sports-header.tt{background:#010101;}
+.tv-sports-header h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:.88rem;color:#fff;}
+.tv-sports-row{display:flex;justify-content:space-between;align-items:center;padding:.5rem 1rem;border-bottom:1px solid var(--border);font-size:.76rem;}
+.tv-sports-row:last-child{border-bottom:none;}
+.tv-sports-row .name{color:var(--ink);}
+.tv-sports-row .count{font-weight:700;color:var(--green-dk);}
+
+/* ── WORKING PROCESS ── */
+.wp-section{margin-top:3.5rem;padding-top:3rem;border-top:1px solid var(--border);}
+.wp-head{text-align:center;margin-bottom:3rem;}
+.wp-head h2{font-family:'Montserrat',sans-serif;font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:800;letter-spacing:-.03em;color:var(--ink);}
+.wp-head h2 em{font-style:normal;color:var(--green-dk);}
+.wp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0;}
+.wp-step{padding:0 1.1rem;text-align:center;position:relative;}
+.wp-num-wrap{position:relative;display:flex;justify-content:center;margin-bottom:1.1rem;}
+.wp-num-wrap::after{content:'';position:absolute;top:50%;left:50%;width:100%;height:2px;background:repeating-linear-gradient(90deg,var(--green-dk) 0,var(--green-dk) 6px,transparent 6px,transparent 12px);transform:translateY(-50%);z-index:0;}
+.wp-step:last-child .wp-num-wrap::after{display:none;}
+.wp-num{position:relative;z-index:1;width:42px;height:42px;border-radius:50%;background:var(--ink);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;flex-shrink:0;transition:background .2s,transform .2s;}
+.wp-step:hover .wp-num{background:var(--green-dk);transform:scale(1.08);}
+.wp-icon{width:38px;height:38px;object-fit:contain;margin-bottom:.65rem;}
+.wp-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:.92rem;color:var(--green-dk);margin-bottom:.45rem;letter-spacing:-.005em;line-height:1.25;}
+.wp-desc{font-size:.76rem;color:var(--muted);line-height:1.65;font-weight:500;}
+@media(max-width:900px){
+  .tv-channels-grid,.tv-eco-grid,.tv-sports-grid{grid-template-columns:1fr;}
+  .tv-slots-grid{grid-template-columns:1fr;}
+  .wp-grid{grid-template-columns:1fr;gap:2.2rem;}
+  .wp-num-wrap::after{display:none;}
+}
+
+/* ── FOOTER ── */
+footer{background:var(--ink);padding:3rem 5vw 1.5rem;position:relative;overflow:hidden;}
+footer::before{content:'';position:absolute;top:0;left:0;width:500px;height:500px;background:radial-gradient(circle at top left,rgba(169,223,112,.22) 0%,rgba(169,223,112,.10) 35%,transparent 65%);pointer-events:none;z-index:0;}
+footer>*{position:relative;z-index:1;}
+.foot-top{display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr;gap:1.5rem;padding-bottom:3rem;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:2rem}
+.foot-wordmark{font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.1rem;color:white}
+.foot-wordmark span{color:var(--green)}
+.foot-desc{font-size:.82rem;color:rgba(255,255,255,.35);line-height:1.7;max-width:280px}
+.foot-legal{font-size:.7rem;color:rgba(255,255,255,.18);margin-top:1rem;line-height:1.65}
+.foot-col h5{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:1rem}
+.foot-col ul{list-style:none;display:flex;flex-direction:column;gap:.45rem}
+.foot-col ul li a{font-size:.82rem;color:rgba(255,255,255,.35);text-decoration:none;transition:color .2s}
+.foot-col ul li a:hover{color:var(--green)}
+.foot-contact-item{display:flex;gap:.6rem;align-items:flex-start;margin-bottom:.6rem}
+.foot-contact-item .fci{font-size:.85rem;margin-top:.05rem;flex-shrink:0}
+.foot-contact-item a,.foot-contact-item p{font-size:.82rem;color:rgba(255,255,255,.35);text-decoration:none;line-height:1.5;transition:color .2s}
+.foot-contact-item a:hover{color:var(--green)}
+.foot-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.foot-bottom p{font-size:.7rem;color:rgba(255,255,255,.2)}
+.mst-tag{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:100px;padding:.25rem .8rem;font-size:.68rem;color:rgba(255,255,255,.25)}
+.phone-zalo{font-size:.72rem;color:rgba(255,255,255,.4);font-weight:500;margin-left:.3rem;}
+@media(max-width:900px){.foot-top{grid-template-columns:1fr;gap:2rem;}}
+
+@keyframes phoneBlink{
+  0%,100%{color:rgba(255,255,255,.35)}
+  50%{color:var(--green);text-shadow:0 0 12px rgba(169,223,112,.6)}
+}
+.phone-blink{animation:phoneBlink 1.2s ease-in-out}
+@keyframes emailBlink{
+  0%,100%{color:rgba(255,255,255,.35);text-shadow:none;}
+  40%{color:var(--green);text-shadow:0 0 14px rgba(169,223,112,.7),0 0 28px rgba(169,223,112,.4);}
+}
+.email-blink{animation:emailBlink 1.4s ease-in-out}
+
+.foot-logo-symbol{position:relative;width:28px;height:26px;overflow:hidden;flex-shrink:0;}
+.foot-logo-layer{position:absolute;left:-11px;top:-5px;width:50px;height:37px;background:url('images/infinity-logo.png') no-repeat left top/100% 100%;}
+.fl-outer-left{clip-path:inset(85.21% 74.60% 14.79% 21.71%);}
+.fl-outer-right{clip-path:inset(12.94% 19.91% 85.21% 76.94%);}
+.fl-inner-left{clip-path:inset(12.94% 48.65% 85.21% 30.78%);}
+.fl-inner-right{clip-path:inset(85.21% 26.28% 14.79% 52.34%);}
+.fl-diag-thick{clip-path:polygon(52.34% 85.21%,74.60% 85.21%,48.65% 12.94%,26.28% 12.94%);}
+.fl-diag-thin{clip-path:polygon(51.35% 12.94%,56.54% 12.94%,48.65% 85.21%,43.46% 85.21%);}
+.lg-text-foot{font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-.02em;color:white;line-height:1;}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo" style="display:flex;align-items:center;gap:4px;">
+    <span class="lg-text">Inf</span>
+    <img src="images/infinity-logo-crop.png" style="height:1.5rem;width:auto;vertical-align:text-bottom;" alt=""/>
+    <span class="lg-text">ty</span>
+  </a>
+  <ul class="nav-center">
+    <li><a href="index.html"><span class="vi">Giới Thiệu</span><span class="en">About Us</span></a></li>
+    <li class="nav-dropdown">
+      <a href="javascript:void(0)">
+        <span class="vi">Giải Pháp</span>
+        <span class="en">Solutions</span>
+      </a>
+      <div class="nav-dropdown-menu">
+        <div class="mega-grid">
+          <!-- Col 1: OOH -->
+          <div class="mega-col">
+            <a href="our-work-ooh.html" class="mega-col-title vi">Quảng Cáo Ngoài Trời (OOH)</a>
+            <a href="our-work-ooh.html" class="mega-col-title en">Outdoor Advertising (OOH)</a>
+            <div class="mega-sub">
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Pano &amp; LED</span><span class="en">Pano &amp; LED</span></a>
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Quảng Cáo Phương Tiện</span><span class="en">Transit Advertising</span></a>
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Elevator Branding</span><span class="en">Elevator Branding</span></a>
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Digital OOH</span><span class="en">Digital OOH</span></a>
+            </div>
+          </div>
+          <!-- Col 2: Digital -->
+          <div class="mega-col">
+            <a href="our-work-digital.html" class="mega-col-title vi">Quảng Cáo Kỹ Thuật Số</a>
+            <a href="our-work-digital.html" class="mega-col-title en">Digital Advertising</a>
+            <div class="mega-sub">
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">In-app Advertising</span><span class="en">In-app Advertising</span></a>
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Quảng Cáo Tìm Kiếm</span><span class="en">Search Advertising</span></a>
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Quảng Cáo Mạng Xã Hội</span><span class="en">Social Media Advertising</span></a>
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Influencer / KOL-KOC Marketing</span><span class="en">Influencer / KOL-KOC Marketing</span></a>
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">OTT Marketing</span><span class="en">OTT Marketing</span></a>
+            </div>
+          </div>
+          <!-- Col 3: TV -->
+          <div class="mega-col">
+            <a href="our-work-tv.html" class="mega-col-title vi">Quảng Cáo Truyền Hình</a>
+            <a href="our-work-tv.html" class="mega-col-title en">TV Advertising</a>
+            <div class="mega-sub">
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Truyền Hình Truyền Thống</span><span class="en">Linear TV</span></a>
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Quảng Cáo OTT</span><span class="en">Streaming Advertising</span></a>
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">The Sports Cluster</span><span class="en">The Sports Cluster</span></a>
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Sponsorship &amp; Integration</span><span class="en">Sponsorship &amp; Integration</span></a>
+            </div>
+          </div>
+          <!-- Col 4: Production -->
+          <div class="mega-col">
+            <a href="index.html#production-creative" class="mega-col-title vi">Production &amp; Creative</a>
+            <a href="index.html#production-creative" class="mega-col-title en">Production &amp; Creative</a>
+            <div class="mega-sub">
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Sản Xuất TVC</span><span class="en">TVC Production</span></a>
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Sản Xuất Digital Assets</span><span class="en">Digital Asset Production</span></a>
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Packaging &amp; Brand Design</span><span class="en">Packaging &amp; Brand Design</span></a>
+            </div>
+          </div>
+          <!-- Col 5: KOL -->
+          <div class="mega-col">
+            <a href="index.html#kol-strategy" class="mega-col-title vi">KOL Strategy &amp; Content</a>
+            <a href="index.html#kol-strategy" class="mega-col-title en">KOL Strategy &amp; Content</a>
+            <div class="mega-sub">
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Research &amp; Strategy</span><span class="en">KOL Research &amp; Strategy</span></a>
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Management &amp; Booking</span><span class="en">KOL Management &amp; Booking</span></a>
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Content Production</span><span class="en">Content Production &amp; Creative</span></a>
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Boost &amp; Amplification</span><span class="en">Boost &amp; Amplification</span></a>
+              <a href="javascript:void(0)" style="cursor:default;pointer-events:none;"><span class="vi">Reporting &amp; Insights</span><span class="en">Reporting &amp; Insights</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li><a href="tin-tuc.html"><span class="vi">Tin Tức &amp; Sự Kiện</span><span class="en">News &amp; Events</span></a></li>
+    <li><a href="tuyen-dung.html"><span class="vi">Tuyển Dụng</span><span class="en">Join Us</span></a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="vi" onclick="setLang('vi')">VI</button>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <a href="#" onclick="scrollToEmail();return false;" class="nav-cta"><span class="vi">Liên Hệ →</span><span class="en">Contact Us →</span></a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="ow-hero">
+  <a href="index.html" class="ow-breadcrumb">← <span class="vi">Trang Chủ</span><span class="en">Home</span></a>
+  <h1 class="vi">Quảng Cáo <span>Truyền Hình</span></h1>
+  <h1 class="en">TV <span>Advertising</span></h1>
+  <p class="vi">Kênh phân phối độc quyền trên TV, tiếp cận hàng triệu khán giả Việt Nam qua các kênh truyền hình hàng đầu và khung giờ vàng.</p>
+  <p class="en">Exclusive TV distribution channels, reaching millions of Vietnamese viewers through leading TV channels and prime-time slots.</p>
+</div>
+
+<div class="ow-wrap">
+
+  <!-- SECTION 1: 3 Exclusive TV Channels -->
+  <div class="tv-section">
+    <h2 class="tv-section-title">
+      <span class="vi">3 Kênh TV <em>Độc Quyền</em></span>
+      <span class="en">3 <em>Exclusive</em> TV Channels</span>
+    </h2>
+    <div class="tv-channels-grid">
+
+      <!-- SCTV6 -->
+      <div class="tv-channel-card">
+        <div class="tv-channel-logo navy">
+          <img src="images/tv-sctv6.png" alt="SCTV6"/>
+        </div>
+        <div class="tv-channel-header">
+          <h3>SCTV6</h3>
+          <div class="sub vi">Giải Trí</div>
+          <div class="sub en">Entertainment</div>
+        </div>
+        <div class="tv-channel-body">
+          <div class="tv-channel-row">
+            <span class="tv-channel-row-label vi">Khán Giả</span>
+            <span class="tv-channel-row-label en">Audience</span>
+            <span class="tv-channel-row-val vi">Phụ nữ 25–54, hộ gia đình miền Nam</span>
+            <span class="tv-channel-row-val en">Women 25–54, Southern households</span>
+          </div>
+          <div class="tv-channel-row">
+            <span class="tv-channel-row-label vi">Nội Dung</span>
+            <span class="tv-channel-row-label en">Content</span>
+            <span class="tv-channel-row-val vi">Phim Hàn, Đài Loan & Việt Nam; Reality & Game Show; Lifestyle</span>
+            <span class="tv-channel-row-val en">Korean, Taiwanese & Vietnamese dramas; Reality & Game Shows; Lifestyle</span>
+          </div>
+          <div class="tv-channel-row">
+            <span class="tv-channel-row-label vi">Điểm Mạnh</span>
+            <span class="tv-channel-row-label en">Strength</span>
+            <span class="tv-channel-row-val vi">Top 5 kênh cáp miền Nam, tầm phủ sóng khu vực mạnh</span>
+            <span class="tv-channel-row-val en">Top 5 cable channel in Southern Vietnam, strong regional reach</span>
+          </div>
+          <div class="tv-channel-row">
+            <span class="tv-channel-row-label vi">Hình Thức QC</span>
+            <span class="tv-channel-row-label en">Ad Formats</span>
+            <span class="tv-channel-row-val">TVC 15s/30s, Sponsorship, Billboard, Brand Title</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- VTVCAB6 ONSPORTS+ -->
+      <div class="tv-channel-card">
+        <div class="tv-channel-logo blue">
+          <img src="images/tv-vtvcab.png" alt="VTVcab ONSPORTS+"/>
+        </div>
+        <div class="tv-channel-header">
+          <h3>VTVCAB6, ONSPORTS+</h3>
+          <div class="sub vi">Thể Thao</div>
+          <div class="sub en">Sports</div>
+        </div>
+        <div class="tv-channel-body">
+          <div class="tv-channel-row">
+            <span class="tv-channel-row-label vi">Khán Giả</span>
+            <span class="tv-channel-row-label en">Audience</span>
+            <span class="tv-channel-row-val vi">Nam 18–45, người yêu thể thao</span>
+            <span class="tv-channel-row-val en">Men 18–45, sports enthusiasts</span>
+          </div>
+          <div class="tv-channel-row">
+            <span class="tv-channel-row-label vi">Nội Dung</span>
+            <span class="tv-channel-row-label en">Content</span>
+            <span class="tv-channel-row-val">Premier League, La Liga, Champions League, Bundesliga, V.League, Esports</span>
+          </div>
+          <div class="tv-channel-row">
+            <span class="tv-channel-row-label vi">Điểm Mạnh</span>
+            <span class="tv-channel-row-label en">Strength</span>
+            <span class="tv-channel-row-val vi">Kênh thể thao hàng đầu VTVcab, bản quyền phát sóng quốc tế cao cấp</span>
+            <span class="tv-channel-row-val en">VTVcab's leading sports channel, premium international broadcast rights</span>
+          </div>
+          <div class="tv-channel-row">
+            <span class="tv-channel-row-label vi">Hình Thức QC</span>
+            <span class="tv-channel-row-label en">Ad Formats</span>
+            <span class="tv-channel-row-val">TVC, Live Sponsorship, Scoreboard, Lower Third</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- VTVCAB17 ONTRENDING -->
+      <div class="tv-channel-card">
+        <div class="tv-channel-logo teal">
+          <img src="images/tv-ontrending.jpg" alt="ONTRENDING"/>
+        </div>
+        <div class="tv-channel-header">
+          <h3>VTVCAB17, ONTRENDING</h3>
+          <div class="sub vi">Trending / Giới Trẻ</div>
+          <div class="sub en">Trending / Youth</div>
+        </div>
+        <div class="tv-channel-body">
+          <div class="tv-channel-row">
+            <span class="tv-channel-row-label vi">Khán Giả</span>
+            <span class="tv-channel-row-label en">Audience</span>
+            <span class="tv-channel-row-val vi">18–35, thành thị, năng động</span>
+            <span class="tv-channel-row-val en">18–35, urban, dynamic</span>
+          </div>
+          <div class="tv-channel-row">
+            <span class="tv-channel-row-label vi">Nội Dung</span>
+            <span class="tv-channel-row-label en">Content</span>
+            <span class="tv-channel-row-val vi">Phim giới trẻ, Music Shows, Reality, Gameshow, Lifestyle & Fashion</span>
+            <span class="tv-channel-row-val en">Youth Dramas, Music Shows, Reality, Gameshow, Lifestyle & Fashion</span>
+          </div>
+          <div class="tv-channel-row">
+            <span class="tv-channel-row-label vi">Điểm Mạnh</span>
+            <span class="tv-channel-row-label en">Strength</span>
+            <span class="tv-channel-row-val vi">Rating tăng trưởng ổn định, tiếp cận nhân khẩu học trẻ, năng động</span>
+            <span class="tv-channel-row-val en">Consistent rating growth, reaching a young, active demographic</span>
+          </div>
+          <div class="tv-channel-row">
+            <span class="tv-channel-row-label vi">Hình Thức QC</span>
+            <span class="tv-channel-row-label en">Ad Formats</span>
+            <span class="tv-channel-row-val">TVC, Brand Integration, Native Content, Sponsorship</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION 2: 2 Prime-Time Slots -->
+  <div class="tv-section">
+    <h2 class="tv-section-title">
+      <span class="vi">2 Khung Giờ Vàng <em>Độc Quyền</em></span>
+      <span class="en">2 <em>Exclusive</em> Prime-Time Slots</span>
+    </h2>
+    <div class="tv-slots-grid">
+
+      <!-- VTV1 -->
+      <div class="tv-slot-card">
+        <div class="tv-slot-header red-bg">
+          <div>
+            <h3>VTV1</h3>
+            <div class="tv-slot-sub">VIETNAM TODAY</div>
+          </div>
+          <span class="badge vi">Tin Tức / Thời Sự</span>
+          <span class="badge en">News / Current Affairs</span>
+        </div>
+        <div class="tv-slot-logo dark">
+          <img src="images/tv-vtv1.png" alt="VTV1"/>
+        </div>
+        <div class="tv-slot-body">
+          <div class="tv-slot-row">
+            <span class="tv-slot-row-label">⏰ <span class="vi">Khung Giờ</span><span class="en">Time Slot</span></span>
+            <span class="tv-slot-row-val vi">19:00 – 20:00 hàng ngày, khung giờ tin tức quốc gia</span>
+            <span class="tv-slot-row-val en">19:00 – 20:00 daily, national prime-time news hour</span>
+          </div>
+          <div class="tv-slot-row">
+            <span class="tv-slot-row-label">👥 <span class="vi">Khán Giả</span><span class="en">Audience</span></span>
+            <span class="tv-slot-row-val vi">ABC, 25–54, toàn quốc, lãnh đạo, chuyên gia, nội trợ</span>
+            <span class="tv-slot-row-val en">ABC, 25–54, nationwide, executives, professionals, homemakers</span>
+          </div>
+          <div class="tv-slot-row">
+            <span class="tv-slot-row-label">📺 <span class="vi">Nội Dung</span><span class="en">Content</span></span>
+            <span class="tv-slot-row-val vi">Tin tức kinh tế, xã hội & quốc tế, rating cao nhất đài quốc gia</span>
+            <span class="tv-slot-row-val en">Comprehensive daily news on economics, society & international affairs</span>
+          </div>
+          <div class="tv-slot-row">
+            <span class="tv-slot-row-label">⭐ <span class="vi">Điểm Mạnh</span><span class="en">Strength</span></span>
+            <span class="tv-slot-row-val vi">Kênh quốc gia #1 được tin tưởng, phủ sóng toàn quốc, brand presence bên cạnh tin tức cao cấp</span>
+            <span class="tv-slot-row-val en">Vietnam's #1 trusted national channel, nationwide reach, brand presence alongside premium news</span>
+          </div>
+          <div class="tv-slot-row">
+            <span class="tv-slot-row-label">📢 <span class="vi">Hình Thức QC</span><span class="en">Ad Formats</span></span>
+            <span class="tv-slot-row-val">Billboard 10s, TVC 30s, News Sponsorship, Logo Overlay</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vinh Long 1 -->
+      <div class="tv-slot-card">
+        <div class="tv-slot-header navy-bg">
+          <div>
+            <h3>VINH LONG 1</h3>
+            <div class="tv-slot-sub vi">PHIM GIỜ VÀNG 20H, MEKONG</div>
+            <div class="tv-slot-sub en">PRIME-TIME DRAMA 20H, MEKONG</div>
+          </div>
+          <span class="badge vi">Phim / Primetime</span>
+          <span class="badge en">Drama / Primetime</span>
+        </div>
+        <div class="tv-slot-logo navy">
+          <img src="images/tv-thvl1.png" alt="THVL1 Vinh Long 1"/>
+        </div>
+        <div class="tv-slot-body">
+          <div class="tv-slot-row">
+            <span class="tv-slot-row-label">⏰ <span class="vi">Khung Giờ</span><span class="en">Time Slot</span></span>
+            <span class="tv-slot-row-val vi">20:00 – 22:00 hàng ngày, khung giờ mạnh nhất kênh địa phương vùng Mekong</span>
+            <span class="tv-slot-row-val en">20:00 – 22:00 daily, strongest prime-time slot for regional channels in the Mekong Delta</span>
+          </div>
+          <div class="tv-slot-row">
+            <span class="tv-slot-row-label">👥 <span class="vi">Khán Giả</span><span class="en">Audience</span></span>
+            <span class="tv-slot-row-val vi">Phụ nữ & hộ gia đình 25–55, tập trung vùng Đồng bằng Sông Cửu Long & các tỉnh miền Nam</span>
+            <span class="tv-slot-row-val en">Women & households 25–55, concentrated in Mekong Delta & Southern provinces</span>
+          </div>
+          <div class="tv-slot-row">
+            <span class="tv-slot-row-label">📺 <span class="vi">Nội Dung</span><span class="en">Content</span></span>
+            <span class="tv-slot-row-val vi">Phim Việt, Hàn, Trung, gia đình, tình cảm & hành động; khán giả trung thành cao</span>
+            <span class="tv-slot-row-val en">Vietnamese, Korean & Chinese dramas, family, romance & action; highly loyal viewership</span>
+          </div>
+          <div class="tv-slot-row">
+            <span class="tv-slot-row-label">⭐ <span class="vi">Điểm Mạnh</span><span class="en">Strength</span></span>
+            <span class="tv-slot-row-val vi">Top 3 kênh địa phương miền Nam, tiếp cận sâu vào thị trường Đồng bằng Sông Cửu Long</span>
+            <span class="tv-slot-row-val en">Top 3 regional channel in Southern Vietnam, deep reach into the Mekong Delta market</span>
+          </div>
+          <div class="tv-slot-row">
+            <span class="tv-slot-row-label">📢 <span class="vi">Hình Thức QC</span><span class="en">Ad Formats</span></span>
+            <span class="tv-slot-row-val">TVC 15s/30s, Pre/Post Billboard, Episode Brand Title, Sponsorship Spot</span>
+          </div>
+        </div>
+        <p class="tv-source">Source: Kantar Media Vietnam, weekly GRP/rating tracking | Sold exclusively through Infinity Communications</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION 3: VTVcab Digital Ecosystem -->
+  <div class="tv-section">
+    <h2 class="tv-section-title">
+      <span class="vi">Hệ Sinh Thái Số <em>VTVcab</em></span>
+      <span class="en"><em>VTVcab</em> Digital Ecosystem</span>
+    </h2>
+    <div class="tv-eco-grid">
+
+      <div class="tv-eco-card">
+        <div class="tv-eco-header green-bg">
+          <h3>📱 Social Media</h3>
+        </div>
+        <div class="tv-eco-stat">
+          <strong>55 Channels, 39M Followers</strong>
+          <span>Facebook, YouTube, TikTok</span>
+        </div>
+        <div class="tv-eco-body">
+          <p class="vi">Tin tức, highlights, hậu trường, video dạng ngắn, khuếch đại từng nội dung đến tối đa.</p>
+          <p class="en">News, highlights, behind-the-scenes, short-form video, amplifying every piece of content.</p>
+        </div>
+      </div>
+
+      <div class="tv-eco-card">
+        <div class="tv-eco-header blue-bg">
+          <h3>▶ OTT</h3>
+        </div>
+        <div class="tv-eco-stat">
+          <strong>30 Million Users</strong>
+          <span>VTVprime &amp; ON Plus</span>
+        </div>
+        <div class="tv-eco-body">
+          <p class="vi">Bản quyền thể thao cao cấp trực tiếp + VOD phim & chương trình, xem mọi lúc, mọi nơi.</p>
+          <p class="en">Live premium sports rights + VOD for films & shows, watch anytime, anywhere.</p>
+        </div>
+      </div>
+
+      <div class="tv-eco-card">
+        <div class="tv-eco-header purple-bg">
+          <h3>🎬 Content Production</h3>
+        </div>
+        <div class="tv-eco-stat">
+          <strong>Original Content</strong>
+          <span>News, Gameshow, Events</span>
+        </div>
+        <div class="tv-eco-body">
+          <p class="vi">Phim doanh nghiệp, truyền thông chính sách, giải đấu thể thao và branded content.</p>
+          <p class="en">Corporate films, policy communications, sports tournaments and branded content.</p>
+        </div>
+      </div>
+
+    </div>
+    <div style="margin-top:1rem;background:var(--charcoal);padding:.9rem 1.4rem;display:flex;align-items:center;gap:.6rem;">
+      <span style="color:var(--green);font-weight:900;">→</span>
+      <span style="font-size:.78rem;color:rgba(255,255,255,.8);font-weight:600;" class="vi">1 nội dung có bản quyền → phân phối đồng thời trên TV, OTT, Social → tối đa reach, một chi phí sản xuất</span>
+      <span style="font-size:.78rem;color:rgba(255,255,255,.8);font-weight:600;" class="en">One piece of licensed content → distributed simultaneously across TV, OTT, Social → maximum reach, one production cost</span>
+    </div>
+  </div>
+
+  <!-- SECTION 4: ON Sports Cluster -->
+  <div class="tv-section">
+    <h2 class="tv-section-title">
+      <span class="vi">ON Sports, <em>Cụm Kênh Thể Thao</em></span>
+      <span class="en">ON Sports, <em>The Sports Cluster</em></span>
+    </h2>
+    <div class="tv-sports-grid">
+
+      <div class="tv-sports-card">
+        <div class="tv-sports-header fb">
+          <h3>📘 Facebook</h3>
+        </div>
+        <div class="tv-sports-row"><span class="name">ON Sports</span><span class="count">4.2M</span></div>
+        <div class="tv-sports-row"><span class="name">Bóng Đá TV</span><span class="count">565K</span></div>
+        <div class="tv-sports-row"><span class="name">Live Volleyball</span><span class="count">250K</span></div>
+        <div class="tv-sports-row"><span class="name">ON Serie A in VN</span><span class="count">200K</span></div>
+        <div class="tv-sports-row"><span class="name">ON Sports Connect</span><span class="count">150K</span></div>
+      </div>
+
+      <div class="tv-sports-card">
+        <div class="tv-sports-header yt">
+          <h3>▶ YouTube</h3>
+        </div>
+        <div class="tv-sports-row"><span class="name">ON Sports Plus</span><span class="count">850K</span></div>
+        <div class="tv-sports-row"><span class="name">Martial Arts Channel</span><span class="count">750K</span></div>
+        <div class="tv-sports-row"><span class="name">ON Sports</span><span class="count">710K</span></div>
+        <div class="tv-sports-row"><span class="name">Live Volleyball</span><span class="count">650K</span></div>
+        <div class="tv-sports-row"><span class="name">ON Champions League</span><span class="count">520K</span></div>
+      </div>
+
+      <div class="tv-sports-card">
+        <div class="tv-sports-header tt">
+          <h3>♪ TikTok</h3>
+        </div>
+        <div class="tv-sports-row"><span class="name">ON Sports Plus</span><span class="count">1.1M</span></div>
+        <div class="tv-sports-row"><span class="name">VTVcab Sports</span><span class="count">780K</span></div>
+        <div class="tv-sports-row"><span class="name">Martial Arts Channel</span><span class="count">350K</span></div>
+        <div class="tv-sports-row"><span class="name">Live Volleyball</span><span class="count">150K</span></div>
+        <div class="tv-sports-row"><span class="name">ON Sports</span><span class="count">110K</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- WORKING PROCESS -->
+  <div class="wp-section">
+    <div class="wp-head">
+      <h2><span class="vi">Quy Trình <em>Làm Việc</em></span><span class="en">Our Working <em>Process</em></span></h2>
+    </div>
+    <div class="wp-grid">
+      <div class="wp-step">
+        <div class="wp-num-wrap"><div class="wp-num">1</div></div>
+        <img src="images/wp-icon-brief.png" class="wp-icon" alt="Brief"/>
+        <div class="wp-title vi">Brief &amp; Yêu Cầu</div>
+        <div class="wp-title en">Brief &amp; Requirements</div>
+        <div class="wp-desc vi">Nhận brief, xác định mục tiêu, KPI &amp; ngân sách khả dụng.</div>
+        <div class="wp-desc en">Receive brief, define objectives, KPIs &amp; available budget.</div>
+      </div>
+      <div class="wp-step">
+        <div class="wp-num-wrap"><div class="wp-num">2</div></div>
+        <img src="images/wp-icon-plan.png" class="wp-icon" alt="Planning"/>
+        <div class="wp-title vi">Lập Kế Hoạch &amp; Đề Xuất</div>
+        <div class="wp-title en">Planning &amp; Proposal</div>
+        <div class="wp-desc vi">Xây dựng kế hoạch media tối ưu, phân tích GRP/reach, đề xuất phối hợp kênh.</div>
+        <div class="wp-desc en">Develop optimal media plan, analyse GRP/reach, propose channel mix.</div>
+      </div>
+      <div class="wp-step">
+        <div class="wp-num-wrap"><div class="wp-num">3</div></div>
+        <img src="images/wp-icon-booking.png" class="wp-icon" alt="Booking"/>
+        <div class="wp-title vi">Booking &amp; Triển Khai</div>
+        <div class="wp-title en">Booking &amp; Execution</div>
+        <div class="wp-desc vi">Lên lịch phát sóng, ký hợp đồng, quản lý sản xuất &amp; điều phối tài sản.</div>
+        <div class="wp-desc en">Schedule airtime, sign contracts, manage production &amp; asset trafficking.</div>
+      </div>
+      <div class="wp-step">
+        <div class="wp-num-wrap"><div class="wp-num">4</div></div>
+        <img src="images/wp-icon-monitor.png" class="wp-icon" alt="Monitor"/>
+        <div class="wp-title vi">Giám Sát &amp; Tối Ưu</div>
+        <div class="wp-title en">Monitor &amp; Optimise</div>
+        <div class="wp-desc vi">Giám sát tiến độ thực tế, tối ưu booking, xử lý make-good kịp thời.</div>
+        <div class="wp-desc en">Real-time delivery monitoring, booking optimisation, prompt make-goods.</div>
+      </div>
+      <div class="wp-step">
+        <div class="wp-num-wrap"><div class="wp-num">5</div></div>
+        <img src="images/wp-icon-report.png" class="wp-icon" alt="Report"/>
+        <div class="wp-title vi">Báo Cáo &amp; Insight</div>
+        <div class="wp-title en">Report &amp; Insights</div>
+        <div class="wp-desc vi">Báo cáo cuối chiến dịch: GRP đạt được, impressions, engagement, ROI &amp; bài học.</div>
+        <div class="wp-desc en">End-of-campaign report: GRP achieved, impressions, engagement, ROI &amp; learnings.</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /.ow-wrap -->
+
+<footer>
+  <div class="foot-top">
+    <div>
+      <a href="#" class="foot-logo-row" style="display:flex;align-items:center;gap:4px;text-decoration:none;">
+        <span class="lg-text-foot">Inf</span>
+        <img src="images/infinity-logo-crop.png" style="height:1.5rem;width:auto;vertical-align:text-bottom;" alt=""/>
+        <span class="lg-text-foot">ty</span>
+      </a>
+      <p class="foot-desc vi">Nền tảng media trading hàng đầu Việt Nam, kết hợp chiến lược, dữ liệu và sức mạnh trading để thúc đẩy tăng trưởng bền vững.</p>
+      <p class="foot-desc en">Vietnam's leading media trading platform, combining strategy, data, and trading power to drive sustainable growth.</p>
+      <p class="foot-legal vi">CÔNG TY TNHH THƯƠNG MẠI VÀ DỊCH VỤ TRUYỀN THÔNG INFINITY<br>MST: 0317406640</p>
+      <p class="foot-legal en">INFINITY MEDIA & TRADING SERVICES CO., LTD<br>Tax ID: 0317406640</p>
+    </div>
+    <div class="foot-col">
+      <h5 class="vi">Điều Hướng</h5>
+      <h5 class="en">Navigation</h5>
+      <ul>
+        <li><a href="javascript:void(0)"><span class="vi">Giới Thiệu</span><span class="en">About Us</span></a></li>
+        <li><a href="our-work-ooh.html" class="vi">Quảng Cáo Ngoài Trời</a><a href="our-work-ooh.html" class="en">Outdoor Advertising</a></li>
+        <li><a href="our-work-digital.html" class="vi">Quảng Cáo Kỹ Thuật Số</a><a href="our-work-digital.html" class="en">Digital Advertising</a></li>
+        <li><a href="our-work-tv.html" class="vi">Quảng Cáo Truyền Hình</a><a href="our-work-tv.html" class="en">TV Advertising</a></li>
+        <li><a href="tin-tuc.html"><span class="vi">Tin Tức &amp; Sự Kiện</span><span class="en">News &amp; Events</span></a></li>
+        <li><a href="tuyen-dung.html"><span class="vi">Tuyển Dụng</span><span class="en">Join Us</span></a></li>
+      </ul>
+    </div>
+
+    <div class="foot-col">
+      <h5 class="vi">Liên Hệ</h5>
+      <h5 class="en">Contact</h5>
+      <div class="foot-contact-item"><span class="fci">✉️</span><a href="mailto:leo@infinitycomm.vn" id="email-contact"><strong>Info:</strong> leo@infinitycomm.vn</a></div>
+      <div class="foot-contact-item"><span class="fci">📍</span><a href="https://www.google.com/maps/place/Amelie+Villa+-+Nh%C3%A0+Ph%E1%BB%91+H%E1%BB%93ng+Th%E1%BB%8Bnh+Ph%C3%BA+M%E1%BB%B9+H%C6%B0ng/@10.6790506,106.7457464,17z/data=!3m1!4b1!4m6!3m5!1s0x31753be085680a17:0x10239ce943204db9!8m2!3d10.6790453!4d106.7483213!16s%2Fg%2F11j2f_tj9l?entry=ttu&g_ep=EgoyMDI2MDUwNi4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="vi">Số 8 Đường số 5, KDC Amelie Villa, Xã Nhà Bè, TP. HCM</a><a href="https://www.google.com/maps/place/Amelie+Villa+-+Nh%C3%A0+Ph%E1%BB%91+H%E1%BB%93ng+Th%E1%BB%8Bnh+Ph%C3%BA+M%E1%BB%B9+H%C6%B0ng/@10.6790506,106.7457464,17z/data=!3m1!4b1!4m6!3m5!1s0x31753be085680a17:0x10239ce943204db9!8m2!3d10.6790453!4d106.7483213!16s%2Fg%2F11j2f_tj9l?entry=ttu&g_ep=EgoyMDI2MDUwNi4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="en">No. 8, Street 5, Amelie Villa Residence, Nha Be Ward, HCMC</a></div>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <p class="vi">© 2025 Công Ty TNHH TM & DV Truyền Thông Infinity. Bảo lưu mọi quyền.</p>
+    <p class="en">© 2025 Infinity Media & Trading Services Co., Ltd. All rights reserved.</p>
+    <div class="mst-tag">MST: 0317406640</div>
+  </div>
+</footer>
+
+<script>
+function setLang(lang) {
+  document.documentElement.setAttribute('data-lang', lang);
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  localStorage.setItem('inf-lang', lang);
+}
+const savedLang = localStorage.getItem('inf-lang') || 'en';
+setLang(savedLang);
+function scrollToEmail(){
+  const el = document.getElementById('email-contact');
+  if(!el) return;
+  el.scrollIntoView({behavior:'smooth', block:'center'});
+  setTimeout(()=>{
+    el.classList.add('email-blink');
+    setTimeout(()=>el.classList.remove('email-blink'), 1400);
+  }, 600);
+}
+
+</script>
+<button id="back-to-top" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+</button>
+<script>
+(function(){
+  var btn = document.getElementById('back-to-top');
+  var threshold = 400;
+  function toggleBtn(){
+    if (window.scrollY > threshold) btn.classList.add('show');
+    else btn.classList.remove('show');
+  }
+  window.addEventListener('scroll', toggleBtn, {passive:true});
+  toggleBtn();
+})();
+</script>
+</body>
+</html>
